@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// déclaration de la source de données
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// déclaration du model Author
+model Author {
+  id        Int    @id @default(autoincrement())
+  firstname String
+  lastname  String
+  Book      Book[]
+}
+
+// déclaration du model Book
+model Book {
+  id               Int    @id @default(autoincrement())
+  titlename        String
+  author           Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId         Int
+  publication_year Int?
+
+  tags Tag[] @relation("BooksTags") //création de la relation Book-Tag
+
+  comments Comment[]
+  ratings  Rating[]
+}
+
+// déclaration du model Tag
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  books Book[] @relation("BooksTags") //création de la relation Book-Tag
+}
+
+// déclaration du model User
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  username String? @unique
+  password String
+
+  comments Comment[]
+  ratings  Rating[]
+}
+
+// déclaration du model Comment
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId  Int
+  creator User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId Int
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+}
+
+// déclaration du model Rating
+model Rating {
+  id    Int @id @default(autoincrement())
+  value Int
+
+  userId  Int
+  creator User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId Int
+  book   Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@unique(name: "userRating_book", [bookId, userId])
+}
