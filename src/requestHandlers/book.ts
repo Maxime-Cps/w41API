@@ -19,6 +19,8 @@ export async function get_all(req: Request, res: Response) {
     const filter: Prisma.BookWhereInput = {};
     const includeOptions: Prisma.BookInclude = {};
 
+    includeOptions.tags = true;
+
     if (titlenameInput) {
         filter.titlename = {contains: String(titlenameInput)};
     }
