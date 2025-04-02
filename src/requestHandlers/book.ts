@@ -104,7 +104,6 @@ export async function get_all_of_author(req: Request, res: Response) {
 // Créer un livre pour un auteur
 export async function create_one(req: Request, res: Response) {
     assert(req.body, BookCreationData);
-
     try {
         const newbook = await prisma.book.create({
             data: {
@@ -117,7 +116,7 @@ export async function create_one(req: Request, res: Response) {
                 },
             }
         })
-        res.status(201).end(newbook);
+        res.status(201).end('Created');
     } catch (err: unknown) {
         if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
             throw new NotFoundError('Author not found');
