@@ -20,7 +20,7 @@ export const AuthorBooksQueryParams = object({
 });
 
 export const BooksQueryParams = object({
-    titlenameInput: optional(size(string(), 1, 50)),
+    titlename: optional(size(string(), 1, 50)),
     include: optional(enums(['author'])),
     skip: optional(string()),
     take: optional(string())

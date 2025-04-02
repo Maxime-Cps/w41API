@@ -15,14 +15,14 @@ function getCount(filter: Prisma.BookWhereInput){
 // Avoir tous les livres
 export async function get_all(req: Request, res: Response) {
     assert(req.query, BooksQueryParams);
-    const {titlenameInput, include, skip, take} = req.query;
+    const {titlename, include, skip, take} = req.query;
     const filter: Prisma.BookWhereInput = {};
     const includeOptions: Prisma.BookInclude = {};
 
     includeOptions.tags = true;
 
-    if (titlenameInput) {
-        filter.titlename = {contains: String(titlenameInput)};
+    if (titlename) {
+        filter.titlename = {contains: String(titlename)};
     }
 
     if (include === 'author') {
