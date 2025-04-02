@@ -17,7 +17,6 @@ export async function get_all(req: Request, res: Response) {
     const { lastnameInput, hasBooks, include, skip, take } = req.query;
     const filter: Prisma.AuthorWhereInput = {};
 
-
     if (lastnameInput) {
         filter.lastname = { contains: String(lastnameInput) };
     }
@@ -44,7 +43,9 @@ export async function get_all(req: Request, res: Response) {
         orderBy: {
             lastname: 'asc'
         },
-        include: includeOption
+        include: includeOption,
+        skip: skip ? parseInt(String(skip)) : 0,
+        take: take ? parseInt(String(take)) : 10
     });
 
     const totalCount = await getCount(filter);
