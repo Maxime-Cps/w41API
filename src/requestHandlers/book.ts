@@ -104,6 +104,7 @@ export async function get_all_of_author(req: Request, res: Response) {
 // Créer un livre pour un auteur
 export async function create_one(req: Request, res: Response) {
     assert(req.body, BookCreationData);
+
     try {
         const newbook = await prisma.book.create({
             data: {
