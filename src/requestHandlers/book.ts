@@ -44,9 +44,7 @@ export async function get_all(req: Request, res: Response) {
         },
         include: includeOptions
     });
-
     const totalCount = await getCount(filter);
-
     res.set('X-Total-Count', totalCount.toString());
     res.json(books);
 }
