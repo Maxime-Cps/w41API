@@ -33,6 +33,8 @@ export async function get_all(req: Request, res: Response) {
         };
     }
 
+    includeOptions.tags = true;
+
     const books = await prisma.book.findMany({
         skip: skip ? parseInt(String(skip)) : 0,
         take: take ? parseInt(String(take)) : 5,
