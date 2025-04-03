@@ -128,10 +128,11 @@ export async function create_one(req: Request, res: Response) {
 // Mettre à jour un livre
 export async function update_one(req: Request, res: Response) {
     assert(req.body, BookUpdateData);
+    const bookId = parseInt(req.params.book_id);
     try {
         const bookToUpdate = await prisma.book.update({
             where: {
-                id: parseInt(req.params.book_id)
+                id: bookId
             },
             data: {
                 titlename: req.body.titlename,

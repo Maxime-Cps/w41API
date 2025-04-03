@@ -2,7 +2,6 @@ import {object, string, size, number, optional, enums} from 'superstruct';
 
 export const BookCreationData = object({
     titlename: size(string(), 1, 50),
-    //author_id: number(),
     publication_year: number(),
 });
 
