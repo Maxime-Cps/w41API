@@ -1,4 +1,4 @@
-import {object, string, size, number, optional, enums} from 'superstruct';
+import {object, string, size, number, optional, enums, nullable} from 'superstruct';
 
 export const BookCreationData = object({
     titlename: size(string(), 1, 50),
@@ -7,7 +7,7 @@ export const BookCreationData = object({
 
 export const BookUpdateData = object({
     titlename: size(string(), 1, 50),
-    publication_year: number(),
+    publication_year: nullable(number()),
 });
 
 export const AuthorBooksQueryParams = object({
