@@ -7,7 +7,7 @@ export const BookCreationData = object({
 
 export const BookUpdateData = object({
     titlename: size(string(), 1, 50),
-    publication_year: nullable(number()),
+    publication_year: optional(number()),
 });
 
 export const AuthorBooksQueryParams = object({
