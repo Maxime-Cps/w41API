@@ -2,6 +2,7 @@ import {object, string, size, number, optional, enums, nullable} from 'superstru
 
 export const BookCreationData = object({
     titlename: size(string(), 1, 50),
+    authorId: number(),
     publication_year: number(),
 });
 
