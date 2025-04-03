@@ -77,7 +77,7 @@ export async function create_one(req: Request, res: Response) {
                 lastname : req.body.lastname,
             },
         });
-        res.status(201).end('Created');
+        res.status(201).json(author);
     } catch (err: unknown) {
         if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
             throw new NotFoundError('Author not created');

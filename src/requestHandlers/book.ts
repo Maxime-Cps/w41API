@@ -114,7 +114,7 @@ export async function create_one(req: Request, res: Response) {
                 },
             }
         })
-        res.status(201).end('Created');
+        res.status(201).json(newbook);
     } catch (err: unknown) {
         if (err instanceof PrismaClientKnownRequestError && err.code === 'P2025') {
             throw new NotFoundError('Author not found');
