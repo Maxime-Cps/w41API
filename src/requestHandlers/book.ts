@@ -135,7 +135,6 @@ export async function update_one(req: Request, res: Response) {
             },
             data: {
                 titlename: req.body.titlename,
-                authorId: req.body.authorId,
                 publication_year: req.body.publication_year
             }
         });
