@@ -84,7 +84,7 @@ export async function get_all_of_author(req: Request, res: Response) {
                 titlename: 'asc'
             },
             skip: skip ? parseInt(String(skip)) : 0,
-            take: take ? parseInt(String(take)) : 5,
+            take: take ? parseInt(String(take)) : 100,
         });
 
         const totalCount = await getCount(filter);
