@@ -7,7 +7,6 @@ export const BookCreationData = object({
 });
 
 export const BookUpdateData = object({
-    id: number(),
     titlename: size(string(), 1, 50),
     authorId: number(),
     publication_year: number(),
