@@ -145,7 +145,7 @@ app.route('/books/:book_id/ratings/average')
 ==========================
 -------------------------*/
 app.get('/', (req: Request, res: Response) => {
-    throw res.status(404).end('Not Found');
+    throw res.status(200).end('Welcome on the API');
 });
 
 
