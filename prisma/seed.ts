@@ -1,11 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { connect } from 'http2';
 
 const prisma = new PrismaClient();
 
 async function main() {
     // 1. Create Tags
-    const tagFantasy = await prisma.tag.upsert({ // upsert to avoid duplication
+    const tagFantasy = await prisma.tag.upsert({
         where: { name: "Fantasy" },
         update: {},
         create: { name: "Fantasy" }
@@ -56,35 +55,44 @@ async function main() {
     });
 
     // 4. Create Users
-    const critic1 = await prisma.user.create({
-        data: {
+    const users = [
+        {
             username: "Critique1",
             email: "example@example.com",
-            password: "$2a$12$RB2JiaPZUXJ8ZHxt6GXUxe1qqviGD0jJjGccpJPvy/GDoAW2MIgLq" // examplePassword
-        }
-    });
-    const critic2 = await prisma.user.create({
-        data: {
+            password: "$2a$12$RB2JiaPZUXJ8ZHxt6GXUxe1qqviGD0jJjGccpJPvy/GDoAW2MIgLq"
+        },
+        {
             username: "Critique2",
             email: "example2@example2.com",
-            password: "$2a$12$D7MtB7auJ9o1uFYpHiEUJOlRfV7.jPtFDCrwtFMsVSnC1lya7UwMC" // examplePassword
+            password: "$2a$12$D7MtB7auJ9o1uFYpHiEUJOlRfV7.jPtFDCrwtFMsVSnC1lya7UwMC"
         }
-    });
+    ];
+
+    for (const user of users) {
+        const existingUser = await prisma.user.findUnique({
+            where: { username: user.username }
+        });
+        if (!existingUser) {
+            await prisma.user.create({
+                data: user
+            });
+        }
+    }
 
     // 5. Create Ratings
     await prisma.rating.create({
         data: {
             value: 19,
-            book: { connect: {id: lotrBook.id} },
-            creator: { connect: {id: critic1.id} }
+            book: { connect: { id: lotrBook.id } },
+            creator: { connect: { username: "Critique1" } }
         }
     });
 
     await prisma.rating.create({
         data: {
             value: 18,
-            book: { connect: {id: lotrBook.id} },
-            creator: { connect: {id: critic2.id} }
+            book: { connect: { id: lotrBook.id } },
+            creator: { connect: { username: "Critique2" } }
         }
     });
 
@@ -92,18 +100,18 @@ async function main() {
     await prisma.comment.create({
         data: {
             content: "Very good, very nice",
-            book: { connect: {id: lotrBook.id} },
-            creator: { connect: {id: critic1.id} }
+            book: { connect: { id: lotrBook.id } },
+            creator: { connect: { username: "Critique1" } }
         }
     });
 
     await prisma.comment.create({
         data: {
             content: "Tiny little humans with a ring",
-            book: { connect: {id: hobBook.id} },
-            creator: { connect: {id: critic2.id} }
+            book: { connect: { id: hobBook.id } },
+            creator: { connect: { username: "Critique2" } }
         }
-    })
+    });
 
     console.log("Database seeded successfully!");
 }
