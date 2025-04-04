@@ -16,6 +16,30 @@ async function main() {
         create: { name: "Adventure Story" }
     });
 
+    const tagSciFi = await prisma.tag.upsert({
+        where: { name: "Science Fiction" },
+        update: {},
+        create: { name: "Science Fiction" }
+    });
+
+    const tagDistopy = await prisma.tag.upsert({
+        where: { name: "Dystopian" },
+        update: {},
+        create: { name: "Dystopian" }
+    });
+
+    const tagPhilosophy = await prisma.tag.upsert({
+        where: { name: "Philosophy" },
+        update: {},
+        create: { name: "Philosophy" }
+    });
+
+    const tagHorror = await prisma.tag.upsert({
+        where: { name: "Horror" },
+        update: {},
+        create: { name: "Horror" }
+    });
+
     // 2. Create Authors
     const authorTolkien = await prisma.author.create({
         data: {
@@ -31,10 +55,38 @@ async function main() {
         }
     });
 
+    const authorCamus = await prisma.author.create({
+        data: {
+            firstname: "Albert",
+            lastname: "Camus"
+        }
+    });
+
+    const authorHerbert = await prisma.author.create({
+        data: {
+            firstname: "Frank",
+            lastname: "Herbert"
+        }
+    });
+
+    const authorBradbury = await prisma.author.create({
+        data: {
+            firstname: "Ray",
+            lastname: "Bradbury"
+        }
+    });
+
+    const authorBarjavel = await prisma.author.create({
+        data: {
+            firstname: "René",
+            lastname: "Barjavel"
+        }
+    });
+
     // 3. Create Books
     const lotrBook = await prisma.book.create({
         data: {
-            titlename: "Le Seigneur des Anneaux",
+            titlename: "Lord of the Rings",
             publication_year: 1954,
             author: { connect: { id: authorTolkien.id } },
             tags: {
@@ -45,11 +97,66 @@ async function main() {
 
     const hobBook = await prisma.book.create({
         data: {
-            titlename: "Le Hobbit",
+            titlename: "The Hobbit",
             publication_year: 1937,
             author: { connect: { id: authorTolkien.id } },
             tags: {
                 connect: [{ id: tagFantasy.id }, { id: tagAdventure.id }]
+            }
+        }
+    });
+
+    const etrBook = await prisma.book.create({
+        data: {
+            titlename: "L'Etranger",
+            publication_year: 1942,
+            author: { connect: { id: authorCamus.id } },
+            tags: {
+                connect: [{ id: tagPhilosophy.id }]
+            }
+        }
+    });
+
+    const duneBook = await prisma.book.create({
+        data: {
+            titlename: "Dune",
+            publication_year: 1965,
+            author: { connect: { id: authorHerbert.id } },
+            tags: {
+                connect: [{ id: tagSciFi.id }, { id: tagDistopy.id }, { id: tagAdventure.id }]
+            }
+        }
+    });
+
+    const f451Book = await prisma.book.create({
+        data: {
+            titlename: "Fahrenheit 451",
+            publication_year: 1953,
+            author: { connect: { id: authorBradbury.id } },
+            tags: {
+                connect: [{ id: tagSciFi.id }, { id: tagDistopy.id }]
+            }
+        }
+    });
+
+    const ndtBook = await prisma.book.create({
+        data: {
+            titlename: "La Nuit des temps",
+            publication_year: 1958,
+            author: { connect: { id: authorBarjavel.id } },
+            tags: {
+                connect: [{ id: tagSciFi.id }, { id: tagDistopy.id }]
+            }
+        }
+    });
+
+    const cvaBook = await prisma.book.create({
+        data: {
+            titlename: "The Colour Out of Space",
+            publication_year: 1927,
+            author: { connect: { id: authorLovecraft.id } },
+            tags: {
+                connect: [{ id: tagHorror.id }, { id: tagSciFi.id }]
             }
         }
     });
