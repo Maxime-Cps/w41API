@@ -89,9 +89,10 @@ export async function create_one(req: Request, res: Response) {
 export async function update_one(req: Request, res: Response) {
     assert(req.body, AuthorUpdateData);
     try {
+        const authorId = parseInt(req.params.id);
         const author = await prisma.author.update({
             where: {
-                id: req.body.id
+                id: authorId
             },
             data: {
                 firstname : req.body.firstname,
