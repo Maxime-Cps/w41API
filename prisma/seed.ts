@@ -1,178 +1,111 @@
 import { PrismaClient } from '@prisma/client';
+import { connect } from 'http2';
 
 const prisma = new PrismaClient();
 
-// Ajout de deux auteurs dans la BDD
 async function main() {
+    // 1. Create Tags
+    const tagFantasy = await prisma.tag.upsert({ // upsert to avoid duplication
+        where: { name: "Fantasy" },
+        update: {},
+        create: { name: "Fantasy" }
+    });
 
-    const tags = [
-        { name: 'Fantasy' },
-        { name: 'Horror' },
-        { name: 'Adventure' }
-    ];
+    const tagAdventure = await prisma.tag.upsert({
+        where: { name: "Adventure Story" },
+        update: {},
+        create: { name: "Adventure Story" }
+    });
 
-    for (const tag of tags) {
-        await prisma.tag.create({
-            data: tag
-        });
-    }
-
-    // Create authors and their books with associated tags
-    const authors = [
-        {
-            firstname: 'J. R. R.',
-            lastname: 'Tolkien',
-            Book: {
-                create: [
-                    {
-                        titlename: 'The Lord of the Rings',
-                        publication_year: 1954,
-                        tags: {
-                            connect: [{ name: 'Fantasy' }, { name: 'Adventure' }]
-                        }
-                    },
-                    {
-                        titlename: 'The Hobbit',
-                        publication_year: 1937,
-                        tags: {
-                            connect: [{ name: 'Fantasy' }]
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            firstname: 'H. P.',
-            lastname: 'Lovecraft',
-            Book: {
-                create: [
-                    {
-                        titlename: 'The Call of Cthulhu',
-                        publication_year: 1928,
-                        tags: {
-                            connect: [{ name: 'Horror' }]
-                        }
-                    }
-                ]
-            }
+    // 2. Create Authors
+    const authorTolkien = await prisma.author.create({
+        data: {
+            firstname: "J. R. R.",
+            lastname: "Tolkien"
         }
-    ];
+    });
 
-    for (const author of authors) {
-        await prisma.author.create({
-            data: author
-        });
-    }
+    const authorLovecraft = await prisma.author.create({
+        data: {
+            firstname: "H. P.",
+            lastname: "Lovecraft"
+        }
+    });
 
-    const books = [
-        {
-            titlename: 'The Lord of the Rings',
-            authorId: 1,
+    // 3. Create Books
+    const lotrBook = await prisma.book.create({
+        data: {
+            titlename: "Le Seigneur des Anneaux",
             publication_year: 1954,
-        },
-        {
-            titlename: 'The Hobbit',
-            authorId: 1,
-            publication_year: 1937
-        },
-        {
-            titlename: 'The Call of Cthulhu',
-            authorId: 2,
-            publication_year: 1928
+            author: { connect: { id: authorTolkien.id } },
+            tags: {
+                connect: [{ id: tagFantasy.id }, { id: tagAdventure.id }]
+            }
         }
-    ];
+    });
 
-    for (const book of books) {
-        await prisma.book.create({
-            data: book,
-            include: {
-                author: true
+    const hobBook = await prisma.book.create({
+        data: {
+            titlename: "Le Hobbit",
+            publication_year: 1937,
+            author: { connect: { id: authorTolkien.id } },
+            tags: {
+                connect: [{ id: tagFantasy.id }, { id: tagAdventure.id }]
             }
-        });
-    }
+        }
+    });
 
-    const users = [
-        {
-            email: 'johndoe@gg.com',
-            username: 'JDoe',
-            password: '$2a$12$7kvadU7EZLhM6vj490bxluYwCY18yj1.vryt2RxNHApS4qIodigSi',
-            comments: {
-                create: [
-                    {
-                        content: 'very good book',
-                        book: {
-                            connect: {id: 1}
-                        }
-                    },
-                    {
-                        content: 'dogshit',
-                        book: {
-                            connect: {id: 2}
-                        }
-                    }
-                ]
-            },
-            ratings: {
-                create: [
-                    {
-                        value: 5,
-                        book: {
-                            connect: {id: 1}
-                        }
-                    },
-                    {
-                        value: 1,
-                        book: {
-                            connect: {id: 2}
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            email: 'jackdaniels@gg.com',
-            username: 'Jdan',
-            password: '$2a$12$WWZZAtg9V/Wum18lyYqXR./H.lZ3l2auiLeXICAwU5Tml8g4p37D.',
-            comments: {
-                create: [
-                    {
-                        content: 'ok',
-                        book: {
-                            connect: {id: 1}
-                        }
-                    },
-                    {
-                        content: 'loved it',
-                        book: {
-                            connect: {id: 2}
-                        }
-                    }
-                ]
-            },
-            ratings: {
-                create: [
-                    {
-                        value: 2,
-                        book: {
-                            connect: {id: 1}
-                        }
-                    },
-                    {
-                        value: 4,
-                        book: {
-                            connect: {id: 2}
-                        }
-                    }
-                ]
-            }
-        },
-    ]
+    // 4. Create Users
+    const critic1 = await prisma.user.create({
+        data: {
+            username: "Critique1",
+            email: "example@example.com",
+            password: "$2a$12$RB2JiaPZUXJ8ZHxt6GXUxe1qqviGD0jJjGccpJPvy/GDoAW2MIgLq" // examplePassword
+        }
+    });
+    const critic2 = await prisma.user.create({
+        data: {
+            username: "Critique2",
+            email: "example2@example2.com",
+            password: "$2a$12$D7MtB7auJ9o1uFYpHiEUJOlRfV7.jPtFDCrwtFMsVSnC1lya7UwMC" // examplePassword
+        }
+    });
 
-    for (const user of users) {
-        await prisma.user.create({
-            data: user,
-        });
-    }
+    // 5. Create Ratings
+    await prisma.rating.create({
+        data: {
+            value: 19,
+            book: { connect: {id: lotrBook.id} },
+            creator: { connect: {id: critic1.id} }
+        }
+    });
+
+    await prisma.rating.create({
+        data: {
+            value: 18,
+            book: { connect: {id: lotrBook.id} },
+            creator: { connect: {id: critic2.id} }
+        }
+    });
+
+    // 6. Create Comments
+    await prisma.comment.create({
+        data: {
+            content: "Very good, very nice",
+            book: { connect: {id: lotrBook.id} },
+            creator: { connect: {id: critic1.id} }
+        }
+    });
+
+    await prisma.comment.create({
+        data: {
+            content: "Tiny little humans with a ring",
+            book: { connect: {id: hobBook.id} },
+            creator: { connect: {id: critic2.id} }
+        }
+    })
+
+    console.log("Database seeded successfully!");
 }
 
 main()
@@ -184,4 +117,3 @@ main()
         await prisma.$disconnect();
         process.exit(1);
     });
-
